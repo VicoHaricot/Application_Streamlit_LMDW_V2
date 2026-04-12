@@ -13,12 +13,44 @@ presta = namedtuple("Prestation", "Numéro_Article Description Quantité Prix_To
 # Upload du PDF
 pdf_file = st.file_uploader("Uploader le PDF", type="pdf")
 
+import base64
+
 if pdf_file:
+    st.subheader("📄 Aperçu du PDF")
+
+    pdf_bytes = pdf_file.read()
+    base64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+
+    st.markdown(f"""
+        <iframe src="data:application/pdf;base64,{base64_pdf}" 
+        width="100%" height="600px">
+        </iframe>
+    """, unsafe_allow_html=True)
+
+    pdf_file.seek(0)  # 🔥 TRÈS IMPORTANT
+
+if pdf_file:
+
+    start_page = st.number_input(
+        "📄 Page de départ de l'annexe",
+        min_value=1,
+        value=5,
+        step=1
+    )
+
+    start_index = start_page - 1
 
     text = ""
     with pdfplumber.open(pdf_file) as pdf:
-        for page in pdf.pages[:]:
-            text += page.extract_text()
+
+        total_pages = len(pdf.pages)
+        st.info(f"Le PDF contient {total_pages} pages")
+
+        if start_index >= total_pages:
+            st.error("⚠️ La page de départ dépasse le nombre de pages du PDF")
+        else:
+            for page in pdf.pages[start_index:]:
+                text += page.extract_text()
 
     pres_re = re.compile(r"(^\d+\S*)\s(.+?)\s+(\d+)\s+0,\d+.*?(\d+,\d+|\d+)\s+\d+\s*$")
 
