@@ -6,7 +6,8 @@ from collections import namedtuple
 import openpyxl
 
 
-st.title("📄 Traitement de facture")
+st.title("📄 Traitement de facture LMDW.")
+st.write("📄 Il faut avoir le pdf avec les pages d'annexe UNIQUEMENT !")
 
 presta = namedtuple("Prestation", "Numéro_Article Description Quantité Prix_Total")
 
