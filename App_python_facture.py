@@ -6,7 +6,6 @@ from collections import namedtuple
 import openpyxl
 import base64
 
-
 st.title("📄 Traitement de facture LMDW.")
 
 presta = namedtuple("Prestation", "Numéro_Article Description Quantité Prix_Total")
@@ -14,16 +13,16 @@ presta = namedtuple("Prestation", "Numéro_Article Description Quantité Prix_To
 # Upload du PDF
 pdf_file = st.file_uploader("Uploader le PDF", type="pdf")
 
-if pdf_file:
+if pdf_file: #Si le pdf est upload
 
     start_page = st.number_input(
         "📄 Page de départ de l'annexe",
         min_value=1,
-        value=1,
+        value=1, #Valeur par défaut du début du scraping
         step=1
     )
 
-    start_index = start_page - 1
+    start_index = start_page - 1 #car python commence à 0 et non à 1
 
     text = ""
     with pdfplumber.open(pdf_file) as pdf:
@@ -37,6 +36,7 @@ if pdf_file:
             for page in pdf.pages[start_index:]:
                 text += page.extract_text()
 
+    #Regex pour isoler, N°Art, Desc, Qté, Prix tot
     pres_re = re.compile(r"(^\d+\S*)\s(.+?)\s+(\d+)\s+0,\d+.*?(\d+,\d+|\d+)\s+\d+\s*$")
 
     Article = []
@@ -54,23 +54,30 @@ if pdf_file:
     df = pd.DataFrame(Article)
 
     if not df.empty:
+        #Format des nombres
         df["Quantité"] = df["Quantité"].astype(int)
         df["Prix_Total"] = df["Prix_Total"].str.replace(",", ".").astype(float)
 
+        #Groupe par N°art et Description en faisant la somme sur les quantités et tot prix
         df_grouped = df.groupby(
             ["Numéro_Article", "Description"], as_index=False
         ).agg({"Quantité": "sum", "Prix_Total": "sum"})
 
         st.subheader("📊 Articles détectés")
-        st.dataframe(df_grouped)
+        st.dataframe(df_grouped, hide_index=True)
 
         # Sélection utilisateur
         st.subheader("🛒 Sélection des articles")
 
-        articles = df_grouped["Numéro_Article"].astype(str).tolist()
+        #Pour avoir la description en selection
+        articles = df_grouped["Description"].astype(str).tolist()
         selected_articles = st.multiselect("Choisir les articles", articles)
 
-        df_selection = df_grouped[df_grouped["Numéro_Article"].astype(str).isin(selected_articles)].copy()
+        #Pour avoir le Numéro Article en selection
+        # articles = df_grouped["Numéro_Article"].astype(str).tolist()
+        # selected_articles = st.multiselect("Choisir les articles", articles)
+
+        df_selection = df_grouped[df_grouped["Description"].astype(str).isin(selected_articles)].copy()
 
         if not df_selection.empty:
 
@@ -114,7 +121,7 @@ if pdf_file:
                 "Prix_Total_Saran": "Total (€)"
             })
 
-            st.subheader("✅ Résumé")
+            st.subheader("✅ Prévisualisation")
             st.dataframe(df_selection, hide_index=True)
 
             # Export Excel
