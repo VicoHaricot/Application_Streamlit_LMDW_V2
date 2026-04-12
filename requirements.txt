@@ -3,4 +3,3 @@ pdfplumber
 pandas
 openpyxl
 numpy
-base64
