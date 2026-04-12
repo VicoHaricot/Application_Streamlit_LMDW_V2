@@ -4,6 +4,7 @@ import pandas as pd
 import pdfplumber
 from collections import namedtuple
 import openpyxl
+import base64
 
 
 st.title("📄 Traitement de facture LMDW.")
@@ -13,8 +14,6 @@ presta = namedtuple("Prestation", "Numéro_Article Description Quantité Prix_To
 
 # Upload du PDF
 pdf_file = st.file_uploader("Uploader le PDF", type="pdf")
-
-import base64
 
 if pdf_file:
     st.subheader("📄 Aperçu du PDF")
