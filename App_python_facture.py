@@ -19,7 +19,7 @@ if pdf_file:
     start_page = st.number_input(
         "📄 Page de départ de l'annexe",
         min_value=1,
-        value=5,
+        value=1,
         step=1
     )
 
