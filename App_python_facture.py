@@ -8,26 +8,11 @@ import base64
 
 
 st.title("📄 Traitement de facture LMDW.")
-st.write("📄 Il faut avoir le pdf avec les pages d'annexe UNIQUEMENT !")
 
 presta = namedtuple("Prestation", "Numéro_Article Description Quantité Prix_Total")
 
 # Upload du PDF
 pdf_file = st.file_uploader("Uploader le PDF", type="pdf")
-
-if pdf_file:
-    st.subheader("📄 Aperçu du PDF")
-
-    pdf_bytes = pdf_file.read()
-    base64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
-
-    st.markdown(f"""
-        <iframe src="data:application/pdf;base64,{base64_pdf}" 
-        width="100%" height="600px">
-        </iframe>
-    """, unsafe_allow_html=True)
-
-    pdf_file.seek(0)  # 🔥 TRÈS IMPORTANT
 
 if pdf_file:
 
