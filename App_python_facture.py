@@ -77,11 +77,11 @@ def create_pdf_from_selection(df_final, numero_facture, date_facture, date_echea
 
     data = [df_articles.columns.tolist()] + [
         [
-            row["Article"],
+            row["Code Article"],
             row["Description"],
             row["Quantité"],
-            format_euro(row["Prix Unitaire (€)"]),
-            format_euro(row["Total (€)"]),
+            format_euro(row["Prix Unitaire"]),
+            format_euro(row["Total"]),
         ]
         for _, row in df_articles.iterrows()
     ]
@@ -101,9 +101,9 @@ def create_pdf_from_selection(df_final, numero_facture, date_facture, date_echea
     # =========================
     # TOTAUX (AVEC €)
     # =========================
-    total_ht = df_final.iloc[-3]["Total (€)"]
-    tva = df_final.iloc[-2]["Total (€)"]
-    total_ttc = df_final.iloc[-1]["Total (€)"]
+    total_ht = df_final.iloc[-3]["Total"]
+    tva = df_final.iloc[-2]["Total"]
+    total_ttc = df_final.iloc[-1]["Total"]
 
     elements.append(Spacer(1, 20))
 
@@ -173,6 +173,7 @@ def create_pdf_from_selection(df_final, numero_facture, date_facture, date_echea
 # =========================
 # 🚀 STREAMLIT APP
 # =========================
+
 st.title("📄 Traitement de facture LMDW")
 
 presta = namedtuple("Prestation", "Numéro_Article Description Quantité Prix_Total")
@@ -225,14 +226,15 @@ if pdf_file:
 
         selected = st.multiselect(
             "Choisir les articles",
-            df_grouped["Description"].tolist()
+            df_grouped["Description"].tolist(), accept_new_options=True
         )
 
         df_selection = df_grouped[df_grouped["Description"].isin(selected)].copy()
 
+        st.write(f"### Saisie informations facture")
         numero_facture = st.text_input("🧾 Numéro facture")
         date_facture = st.date_input("📅 Date")
-        date_echeance = st.date_input("⏳ Date d'échéance")
+        date_echeance = st.date_input("⏳ Date d'échéance de la facture")
 
         if not df_selection.empty:
 
@@ -260,41 +262,118 @@ if pdf_file:
 
                 quantites.append(q)
 
-            df_selection["Quantité Saran"] = quantites
+            df_selection["Quantité"] = quantites
 
-            df_selection["Prix Unitaire (€)"] = (
-                df_selection["Prix_Total"] / df_selection["Quantité"]
+            df_selection["Prix Unitaire"] = (
+                    df_selection["Prix_Total"] / df_selection["Quantité"]
             ).round(2)
 
-            df_selection["Total (€)"] = (
-                df_selection["Prix Unitaire (€)"] * df_selection["Quantité Saran"]
+            df_selection["Total"] = (
+                    df_selection["Prix Unitaire"] * df_selection["Quantité"]
             ).round(2)
 
             df_selection = df_selection[
-                ["Numéro_Article", "Description", "Quantité Saran",
-                 "Prix Unitaire (€)", "Total (€)"]
+                ["Numéro_Article", "Description", "Quantité",
+                 "Prix Unitaire", "Total"]
             ].rename(columns={
-                "Numéro_Article": "Article",
-                "Quantité Saran": "Quantité"
+                "Numéro_Article": "Code Article"
             })
 
-            total_ht = df_selection["Total (€)"].sum()
+            # =========================
+            # ➕ PRODUITS MANUELS
+            # =========================
+            st.write("### ➕ Ajouter un produit manuel")
+
+            if "manual_products" not in st.session_state:
+                st.session_state.manual_products = []
+
+            col1, col2, col3, col4 = st.columns(4)
+
+            with col1:
+                manual_ref = st.text_input("Code Article (optionnel)")
+
+            with col2:
+                manual_desc = st.text_input("Description")
+
+            with col3:
+                manual_qty = st.number_input("Quantité", min_value=0.0, step=1.0)
+
+            with col4:
+                manual_price = st.number_input("Prix unitaire", min_value=0.0, step=0.1)
+
+            if st.button("Ajouter le produit"):
+                if manual_desc and manual_qty > 0:
+                    st.session_state.manual_products.append({
+                        "Code Article": manual_ref if manual_ref else "",
+                        "Description": manual_desc,
+                        "Quantité": manual_qty,
+                        "Prix Unitaire": round(manual_price, 2),
+                        "Total": round(manual_price * manual_qty, 2)
+                    })
+
+            st.write("### ✏️ Modifier les produits ajoutés manuellement")
+
+            df_manual = pd.DataFrame(st.session_state.manual_products)
+
+            if df_manual.empty:
+                df_manual = pd.DataFrame(columns=[
+                    "Code Article", "Description", "Quantité",
+                    "Prix Unitaire", "Total"
+                ])
+
+            df_manual = st.data_editor(
+                df_manual,
+                num_rows="dynamic",
+                use_container_width=True
+            )
+
+            # Recalcul automatique des totaux
+            if not df_manual.empty:
+                df_manual["Quantité"] = pd.to_numeric(df_manual["Quantité"], errors="coerce").fillna(0)
+                df_manual["Prix Unitaire"] = pd.to_numeric(df_manual["Prix Unitaire"], errors="coerce").fillna(
+                    0)
+
+                df_manual["Total"] = (
+                        df_manual["Quantité"] * df_manual["Prix Unitaire"]
+                ).round(2)
+
+            # Sauvegarde dans session
+            st.session_state.manual_products = df_manual.to_dict("records")
+
+            # =========================
+            # 🔗 FUSION DES DONNÉES
+            # =========================
+            df_all = pd.concat([df_selection, df_manual], ignore_index=True)
+
+            # =========================
+            # 💰 TOTAUX
+            # =========================
+            total_ht = df_all["Total"].sum()
             tva = round(total_ht * 0.2, 2)
             total_ttc = round(total_ht + tva, 2)
 
             df_totaux = pd.DataFrame([
-                {"Article": "", "Description": "Total HT", "Total (€)": total_ht},
-                {"Article": "", "Description": "TVA 20%", "Total (€)": tva},
-                {"Article": "", "Description": "Total TTC", "Total (€)": total_ttc},
+                {"Code Article": "", "Description": "Total HT", "Total": total_ht},
+                {"Code Article": "", "Description": "TVA 20%", "Total": tva},
+                {"Code Article": "", "Description": "Total TTC", "Total": total_ttc},
             ])
 
-            df_final = pd.concat([df_selection, df_totaux], ignore_index=True)
+            df_final = pd.concat([df_all, df_totaux], ignore_index=True)
 
+            # =========================
+            # 👁️ PRÉVIEW
+            # =========================
             st.subheader("Prévisualisation")
             st.dataframe(df_final)
 
-            if st.button("Générer PDF"):
+            # Reset manuel
+            if st.button("Réinitialiser produits manuels"):
+                st.session_state.manual_products = []
 
+            # =========================
+            # 📄 PDF
+            # =========================
+            if st.button("Générer PDF"):
                 pdf_file_name = create_pdf_from_selection(
                     df_final,
                     numero_facture,

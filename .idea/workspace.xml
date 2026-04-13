@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="04767b72-c1fa-4177-a3ce-e465c6d88c30" name="Changes" comment="MAJ_1, hide_index=True, Descrpition en séléction à la place de N°Article.">
-      <change afterPath="$PROJECT_DIR$/logo.png" afterDir="false" />
+    <list default="true" id="04767b72-c1fa-4177-a3ce-e465c6d88c30" name="Changes" comment="Titre pour les infos facture + date echeance">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/App_python_facture.py" beforeDir="false" afterPath="$PROJECT_DIR$/App_python_facture.py" afterDir="false" />
     </list>
@@ -22,39 +21,48 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "VicoHaricot"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;VicoHaricot&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/VicoHaricot/facture_app_IC_LMDW.git",
-    "accountId": "03fd3bae-50b5-4612-ae2b-ade83fc0c8e4"
+}</component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="470c57a1-b635-43fc-b9e8-d97b1757cf40" />
+  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/VicoHaricot/facture_app_IC_LMDW.git&quot;,
+    &quot;accountId&quot;: &quot;03fd3bae-50b5-4612-ae2b-ade83fc0c8e4&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 3
+  &quot;associatedIndex&quot;: 0
 }</component>
   <component name="ProjectId" id="3CGE3vr7NkkBxO2iEpzJsbTT0Sd" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.App_python_facture.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/victo/PycharmProjects/facture_app_IC_LMDW"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.App_python_facture.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;App__V2__Rectif__titre&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/victo/PycharmProjects/facture_app_IC_LMDW&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\victo\PycharmProjects\facture_app_IC_LMDW" />
@@ -83,12 +91,21 @@
       <option name="project" value="LOCAL" />
       <updated>1776032725919</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Titre pour les infos facture + date echeance">
+      <option name="closed" value="true" />
+      <created>1776071826416</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1776071826416</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Update App_python_facture.py - Page de début de scrapping par défaut &quot;1&quot;" />
     <MESSAGE value="MAJ_1, hide_index=True, Descrpition en séléction à la place de N°Article." />
-    <option name="LAST_COMMIT_MESSAGE" value="MAJ_1, hide_index=True, Descrpition en séléction à la place de N°Article." />
+    <MESSAGE value="Titre pour les infos facture + date echeance" />
+    <option name="LAST_COMMIT_MESSAGE" value="Titre pour les infos facture + date echeance" />
   </component>
 </project>
