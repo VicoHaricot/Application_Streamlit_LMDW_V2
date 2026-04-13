@@ -230,9 +230,10 @@ if pdf_file:
 
         df_selection = df_grouped[df_grouped["Description"].isin(selected)].copy()
 
+        st.write(f"### Saisie informations facture")
         numero_facture = st.text_input("🧾 Numéro facture")
         date_facture = st.date_input("📅 Date")
-        date_echeance = st.date_input("⏳ Date d'échéance")
+        date_echeance = st.date_input("⏳ Date d'échéance de la facture")
 
         if not df_selection.empty:
 
