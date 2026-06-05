@@ -262,16 +262,20 @@ if pdf_file:
 
                 quantites.append(q)
 
+                        # Code CORRIGÉ (à mettre à la place)
+            # Calcul du prix unitaire ORIGINAL (basé sur la quantité originale du PDF)
+            prix_unitaire_original = (df_selection["Prix_Total"] / df_selection["Quantité"]).round(2)
+            
+            # Appliquer les nouvelles quantités saisies par l'utilisateur
             df_selection["Quantité"] = quantites
-
-            df_selection["Prix Unitaire"] = (
-                    df_selection["Prix_Total"] / df_selection["Quantité"]
-            ).round(2)
-
-            df_selection["Total"] = (
-                    df_selection["Prix Unitaire"] * df_selection["Quantité"]
-            ).round(2)
-
+            
+            # Recalculer le total avec le prix unitaire original
+            df_selection["Total"] = (prix_unitaire_original * df_selection["Quantité"]).round(2)
+            
+            # Ajouter la colonne Prix Unitaire (original)
+            df_selection["Prix Unitaire"] = prix_unitaire_original
+            
+            # Sélectionner et renommer les colonnes
             df_selection = df_selection[
                 ["Numéro_Article", "Description", "Quantité",
                  "Prix Unitaire", "Total"]
